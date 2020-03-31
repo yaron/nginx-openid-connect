@@ -17,8 +17,8 @@
         # 500 = token validation error, 502 = error from IdP, 504 = IdP timeout
         error_page 500 502 504 @oidc_error;
 
-        access_log /var/log/nginx/oidc_auth.log main;
-        error_log  /var/log/nginx/oidc_error.log debug;
+        access_log /var/log/nginx/access.log main;
+        error_log  /var/log/nginx/error.log debug;
     }
 
     location = /_jwks_uri {
@@ -41,8 +41,8 @@
         # 500 = token validation error, 502 = error from IdP, 504 = IdP timeout
         error_page 500 502 504 @oidc_error; 
 
-        access_log /var/log/nginx/oidc_auth.log main_jwt;
-        error_log  /var/log/nginx/oidc_error.log debug;
+        access_log /var/log/nginx/access.log main_jwt;
+        error_log  /var/log/nginx/error.log debug;
     }
 
     location = /_token {
@@ -57,7 +57,7 @@
         proxy_set_body    "grant_type=authorization_code&code=$arg_code&client_id=$oidc_client&client_secret=$oidc_client_secret&redirect_uri=$scheme://$host:$server_port$redir_location";
         proxy_pass        $oidc_token_endpoint;
 
-        error_log  /var/log/nginx/oidc_error.log debug;
+        error_log  /var/log/nginx/error.log debug;
     }
 
     location = /_refresh {
@@ -72,7 +72,7 @@
         proxy_set_body    "grant_type=refresh_token&refresh_token=$arg_token&client_id=$oidc_client&client_secret=$oidc_client_secret";
         proxy_pass        $oidc_token_endpoint;
 
-        error_log  /var/log/nginx/oidc_error.log debug;
+        error_log  /var/log/nginx/error.log debug;
     }
 
     location = /_id_token_validation {
@@ -84,7 +84,7 @@
         js_content validateIdToken;
 
         error_page 500 502 504 @oidc_error;
-        error_log  /var/log/nginx/oidc_error.log debug;
+        error_log  /var/log/nginx/error.log debug;
     }
 
     location = /logout {
